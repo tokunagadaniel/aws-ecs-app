@@ -137,11 +137,24 @@ resource "aws_ecs_service" "service" {
   }
 }
 
-
-data "aws_iam_role" "ecs_autoscaling_role" {
+resource "aws_iam_role" "ecs_autoscaling_role" {
   name = "AWSServiceRoleForAutoScaling"
-}
 
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "application-autoscaling.amazonaws.com"
+      },
+      "Effect": "Allow"
+    }
+  ]
+}
+EOF
+}
 
 resource "aws_appautoscaling_target" "ecs_target" {
   max_capacity = 10
