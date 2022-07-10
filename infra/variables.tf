@@ -3,7 +3,7 @@ variable "region" {
 }
 
 variable "vpc_id" {
-        default = "sa-east-1"
+        default = "vpc-00d318417873e5516"
 }
 
 variable "ecs_cluster_name" {
@@ -27,9 +27,9 @@ variable "image_ecr" {
 }
 
 variable "fargate_subnets" {
-        default = "ecs-app"
+        default = "[subnet-0d808f444bb2174f3, subnet-031ac19c8c68cd6e5, subnet-0aff4fb0f3141b3c9]"
 }
 
 variable "queue_name" {
-        default = "myqueue"
+        default = "arn:aws:sqs:sa-east-1:033218463512:myqueue"
 }
