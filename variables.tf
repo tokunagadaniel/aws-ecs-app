@@ -19,7 +19,7 @@ variable "cpu" {
 }
 
 variable "memory" {
-        default = "512"
+        default = "1024"
 }
 
 variable "image_ecr" {

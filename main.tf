@@ -34,44 +34,9 @@ resource "aws_iam_role_policy_attachment" "policy_role_attachment" {
   policy_arn = data.aws_iam_policy.amazon_ecs_task_execution_role_policy.arn
 }
 
-resource "aws_iam_role" "task_role" {
-  name = "ecsTaskRole-${var.service_name}"
-  assume_role_policy = <<ASSUME_ROLE_POLICY
-{
-"Version": "2012-10-17",
-"Statement": [
-    {
-      "Sid": "",
-      "Effect": "Allow",
-      "Principal": {
-        "Service": "ecs-tasks.amazonaws.com"
-      },
-      "Action": "sts:AssumeRole"
-    }
-  ]
-}
-ASSUME_ROLE_POLICY
-}
-resource "aws_iam_policy" "ecs_task_role_policy" {
-  name = "ecsTaskRolePolicy-${var.service_name}"
-  policy = <<POLICY
-{
-  "Version": "2012-10-17",
-  "Statement": [
-  ]
-}
-POLICY
-}
-
-resource "aws_iam_role_policy_attachment" "task_role_policy_attachment" {
-  role = aws_iam_role.task_role.name
-  policy_arn = aws_iam_policy.ecs_task_role_policy.arn
-}
-
 resource "aws_cloudwatch_log_group" "ecs_log_group" {
   name = "/aws/ecs/${var.service_name}"
 }
-
 
 resource "aws_ecs_task_definition" "task_definition" {
   family = var.service_name
@@ -156,6 +121,11 @@ resource "aws_iam_role" "ecs_autoscaling_role" {
 EOF
 }
 
+resource "aws_iam_role_policy_attachment" "ecs_autoscale" {
+  role = aws_iam_role.ecs_autoscaling_role.id
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceAutoscaleRole"
+}
+
 resource "aws_appautoscaling_target" "ecs_target" {
   max_capacity = 10
   min_capacity = 0
@@ -229,7 +199,6 @@ resource "aws_appautoscaling_policy" "scale_up_fargate" {
   }
 }
 
-
 resource "aws_appautoscaling_policy" "scale_down_fargate" {
   policy_type = "StepScaling"
   name = "sqs-scaling-down-${var.service_name}"
@@ -248,7 +217,6 @@ resource "aws_appautoscaling_policy" "scale_down_fargate" {
 
   }
 }
-
 
 resource "aws_cloudwatch_metric_alarm" "sqs_scale_out" {
   alarm_name = "SQS-ScaleOut-${var.service_name}"
