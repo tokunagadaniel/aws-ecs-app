@@ -27,7 +27,7 @@ variable "image_ecr" {
 }
 
 variable "fargate_subnets" {
-        default = "subnet-0d808f444bb2174f3, subnet-031ac19c8c68cd6e5, subnet-0aff4fb0f3141b3c9"
+        default = "172.31.16.0/20, 172.31.0.0/20, 172.31.32.0/20"
 }
 
 variable "queue_name" {
