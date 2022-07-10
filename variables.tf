@@ -7,7 +7,7 @@ variable "vpc_id" {
 }
 
 variable "ecs_cluster_name" {
-        default = "myqueue"
+        default = "infraecsfargate-dev"
 }
 
 variable "service_name" {
