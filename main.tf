@@ -101,7 +101,7 @@ resource "aws_ecs_service" "service" {
   }
 }
 
-resource "aws_iam_service_linked_role" "ecs_autoscaling_role" {
+resource "aws_iam_role" "ecs_autoscaling_role" {
   name = "AWSServiceRoleForAutoScaling"
 
   assume_role_policy = <<EOF
@@ -121,7 +121,7 @@ EOF
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_autoscale" {
-  role = aws_iam_service_linked_role .ecs_autoscaling_role.id
+  role = aws_iam_role.ecs_autoscaling_role.id
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceAutoscaleRole"
 }
 
@@ -129,7 +129,7 @@ resource "aws_appautoscaling_target" "ecs_target" {
   max_capacity = 10
   min_capacity = 0
   resource_id = "service/${data.aws_ecs_cluster.ecs_cluster.cluster_name}/${var.service_name}"
-  role_arn = aws_iam_service_linked_role .ecs_autoscaling_role.arn
+  role_arn = aws_iam_role.ecs_autoscaling_role.arn
   scalable_dimension = "ecs:service:DesiredCount"
   service_namespace = "ecs"
 }
