@@ -97,7 +97,7 @@ resource "aws_ecs_service" "service" {
   network_configuration {
     subnets = ["${var.fargate_subnets}"]
     security_groups = [aws_security_group.security_group.id]
-	assignPublicIp=ENABLED
+	assign_public_ip=true
   }
 }
 
